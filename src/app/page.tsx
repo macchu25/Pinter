@@ -1,65 +1,117 @@
 import Image from "next/image";
+import DashboardHero from "@/components/home/DashboardHero";
+import RightSidebar from "@/components/home/RightSidebar";
+import PostCard from "@/components/blog/PostCard";
+import { getAllPosts, getAllCategories } from "@/lib/api";
 
-export default function Home() {
+export default async function Home() {
+  const posts = await getAllPosts();
+  const categories = await getAllCategories();
+
+  // Premium Mock data
+  const mockPosts = [
+    {
+      _id: 'mock1',
+      title: 'The World of Ice and Fire',
+      slug: 'world-of-ice-and-fire',
+      excerpt: 'Đà Lạt luôn là điểm đến hấp dẫn...',
+      coverImage: 'https://images.unsplash.com/photo-1543002588-bfa74002ed7e?q=80&w=1974&auto=format&fit=crop',
+      category: { name: 'Travel', slug: 'travel' },
+      author: 'George R.R Martin',
+      publishedAt: new Date().toISOString()
+    },
+    {
+      _id: 'mock2',
+      title: 'Fantastic Beasts',
+      slug: 'fantastic-beasts',
+      excerpt: 'Phở bò là linh hồn của ẩm thực...',
+      coverImage: 'https://images.unsplash.com/photo-1629992101753-56d196c8aced?q=80&w=1974&auto=format&fit=crop',
+      category: { name: 'Food', slug: 'food' },
+      author: 'J.K Rowlings',
+      publishedAt: new Date().toISOString()
+    },
+    {
+      _id: 'mock3',
+      title: 'Game of Thrones',
+      slug: 'game-of-thrones',
+      excerpt: 'Làm thế nào để căn hộ nhỏ...',
+      coverImage: 'https://images.unsplash.com/photo-1512820790803-83ca734da794?q=80&w=1974&auto=format&fit=crop',
+      category: { name: 'Interior', slug: 'interior' },
+      author: 'George R.R Martin',
+      publishedAt: new Date().toISOString()
+    },
+    {
+      _id: 'mock4',
+      title: 'The Wise Man\'s Fear',
+      slug: 'wise-mans-fear',
+      excerpt: 'Hạnh phúc không ở đâu xa...',
+      coverImage: 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?q=80&w=1974&auto=format&fit=crop',
+      category: { name: 'Lifestyle', slug: 'lifestyle' },
+      author: 'Patrick Rothfuss',
+      publishedAt: new Date().toISOString()
+    }
+  ];
+
+  // Merge real + mock
+  const displayPosts = [...posts];
+  if (displayPosts.length < 6) {
+    const needed = 6 - displayPosts.length;
+    displayPosts.push(...mockPosts.slice(0, needed));
+  }
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div className="p-4 md:p-6 lg:p-8 w-full">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        {/* Main Side */}
+        <div className="lg:col-span-9">
+          <DashboardHero />
+
+          <section className="mb-16">
+            <div className="flex items-center justify-between mb-10">
+              <h2 className="text-xl font-bold">Popular Now</h2>
+              <button className="text-gray-400 hover:text-gray-900 group flex items-center gap-1 text-xs font-bold uppercase tracking-widest">
+                See all
+              </button>
+            </div>
+            <div className="columns-2 md:columns-3 xl:columns-5 2xl:columns-6 gap-8 space-y-8">
+              {displayPosts.slice(0, 6).map((post: any) => (
+                <div key={post._id} className="break-inside-avoid mb-8">
+                  <PostCard post={post} />
+                </div>
+              ))}
+            </div>
+          </section>
+
+          <section className="mb-16">
+            <div className="flex items-center justify-between mb-10">
+              <h2 className="text-xl font-bold">New Series Collection</h2>
+              <button className="text-gray-400 hover:text-gray-900 group flex items-center gap-1 text-xs font-bold uppercase tracking-widest">
+                See all
+              </button>
+            </div>
+
+            <div className="space-y-6">
+              {(posts.length > 4 ? posts.slice(4, 6) : displayPosts.slice(0, 1)).map((post: any) => (
+                <div key={post._id} className="flex items-center gap-6 p-4 rounded-3xl hover:bg-white transition-colors cursor-pointer group">
+                  <div className="w-20 h-24 bg-gray-200 rounded-lg overflow-hidden shrink-0 shadow-sm group-hover:shadow-md transition-all">
+                    <img src={post.coverImage} alt={post.title} className="w-full h-full object-cover" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-bold text-lg mb-1">{post.title}</h3>
+                    <p className="text-xs text-gray-400 font-bold uppercase tracking-widest">{post.author} • 8 chapters each vol</p>
+                  </div>
+                  <div className="text-sm font-bold text-gray-400 pr-4">
+                    2 vol
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+
+        {/* Right Side */}
+        <RightSidebar />
+      </div>
     </div>
   );
 }
