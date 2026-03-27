@@ -73,6 +73,22 @@ export async function createPost(postData: any, token: string) {
   return res.json();
 }
 
+export async function createCategory(categoryData: any, token: string) {
+  const res = await fetch(`${API_URL}/categories`, {
+    method: 'POST',
+    headers: { 
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    },
+    body: JSON.stringify(categoryData),
+  });
+  if (!res.ok) {
+    const error = await res.json();
+    throw new Error(error.error || 'Failed to create category');
+  }
+  return res.json();
+}
+
 export async function uploadImage(file: File) {
   const formData = new FormData();
   formData.append('image', file);

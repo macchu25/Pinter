@@ -6,6 +6,7 @@ import SidebarTabs from "@/components/layout/SidebarTabs";
 import AuthProvider from "@/components/auth/AuthProvider";
 import Floating3D from "@/components/ui/Floating3D";
 import Footer from "@/components/layout/Footer";
+import Script from "next/script";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,6 +22,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="vi">
+      <head>
+        <Script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX"
+          crossOrigin="anonymous"
+          strategy="afterInteractive"
+        />
+      </head>
       <body className={`${inter.className} bg-[#f8f8f6] text-[#1a1a1a] antialiased selection:bg-red-200 selection:text-red-900`}>
         <AuthProvider>
           <div className="flex min-h-screen relative overflow-hidden">

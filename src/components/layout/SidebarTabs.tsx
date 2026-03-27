@@ -12,7 +12,8 @@ import {
   Settings,
   AlignLeft,
   Search,
-  PlusCircle
+  PlusCircle,
+  LayoutGrid
 } from 'lucide-react';
 
 const SidebarTabs = () => {
@@ -65,6 +66,9 @@ const SidebarTabs = () => {
       </nav>
 
       <div className="flex flex-col gap-6 mt-auto">
+        <Link href="/admin/categories/new" className="p-3 bg-gray-50 rounded-2xl text-gray-400 hover:text-gray-900 transition-colors">
+          <LayoutGrid size={22} />
+        </Link>
         <Link href="/admin/posts/new" className="p-3 bg-gray-50 rounded-2xl text-gray-400 hover:text-gray-900 transition-colors">
           <PlusCircle size={22} />
         </Link>

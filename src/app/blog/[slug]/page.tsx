@@ -5,6 +5,7 @@ import AdSlot from "@/components/ads/AdSlot";
 import { notFound } from "next/navigation";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import { Metadata } from 'next';
+import { Calendar, Clock, Share2, Bookmark, MessageSquare } from 'lucide-react';
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const resolvedParams = await params;
@@ -48,95 +49,135 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
 
   const post = await getPostBySlug(slug);
 
-  // Fallback demo content if not found in DB
-  if (!post && slug !== 'demo') {
-     // Return demo content for presentation
-  }
-
   const displayPost = post || {
-    title: 'Cách Trang Trí Phòng Khách Theo Phong Cách Minimalism',
-    excerpt: 'Làm thế nào để căn hộ nhỏ của bạn trở nên rộng rãi và ấm cúng hơn?',
-    content: { compiledSource: '' }, // Just a mock
+    title: 'The Art of Minimalist Living in Modern Apartments',
+    excerpt: 'Discover how to transform your small living space into a sanctuary of peace and productivity through intentional design.',
+    content: '', 
     coverImage: 'https://images.unsplash.com/photo-1556228453-efd6c1ff04f6?q=80&w=2070&auto=format&fit=crop',
     category: { name: 'Interior', slug: 'interior' },
-    author: 'Interior Pro',
+    author: 'Elena Vance',
     publishedAt: new Date().toISOString()
   };
 
   return (
-    <div className="container mx-auto px-4 py-12">
-      <div className="max-w-4xl mx-auto mb-12">
-        <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-blue-600 mb-4">
-          <a href={`/category/${displayPost.category.slug}`}>{displayPost.category.name}</a>
-          <span className="text-gray-300">•</span>
-          <span className="text-gray-400">{new Date(displayPost.publishedAt).toLocaleDateString('vi-VN')}</span>
-        </div>
-        <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-8 leading-tight">
-          {displayPost.title}
-        </h1>
-        <div className="flex items-center gap-4 border-y py-6 mb-12">
-          <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center font-bold text-blue-600">
-            {displayPost.author.charAt(0)}
-          </div>
-          <div>
-            <div className="font-bold">{displayPost.author}</div>
-            <div className="text-xs text-gray-400 uppercase tracking-widest">Biên tập viên Pinter</div>
-          </div>
-        </div>
-      </div>
+    <div className="bg-white min-h-screen">
+      {/* Header Section - Aligned Left */}
+      <header className="relative pt-20 pb-12 md:pt-32 md:pb-16 overflow-hidden">
+        <div className="max-w-[1600px] mx-auto px-8 relative z-10">
+          <div className="text-left">
+            <div className="inline-flex items-center gap-3 px-4 py-2 bg-blue-50 rounded-full text-blue-600 text-[10px] font-black uppercase tracking-[0.2em] mb-8">
+              <span className="w-2 h-2 bg-blue-600 rounded-full animate-pulse"></span>
+              {displayPost.category.name}
+            </div>
+            
+            <h1 className="text-4xl md:text-6xl lg:text-7xl font-black text-gray-900 tracking-tight leading-[1.1] mb-10 max-w-4xl">
+              {displayPost.title}
+            </h1>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
-        <div className="lg:col-span-8">
-          <div className="aspect-video w-full bg-gray-100 rounded-3xl overflow-hidden mb-12">
-            <img src={displayPost.coverImage} alt={displayPost.title} className="w-full h-full object-cover" />
+            <div className="flex flex-wrap items-center gap-8 text-gray-400 font-bold text-xs uppercase tracking-widest">
+              <div className="flex items-center gap-2">
+                <Calendar size={14} className="text-blue-500" />
+                {new Date(displayPost.publishedAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+              </div>
+              <div className="flex items-center gap-2">
+                <Clock size={14} className="text-blue-500" />
+                6 Min Read
+              </div>
+              <div className="flex items-center gap-2">
+                <MessageSquare size={14} className="text-blue-500" />
+                12 Comments
+              </div>
+            </div>
           </div>
+        </div>
+        
+        {/* Subtle Decorative Elements */}
+        <div className="absolute top-0 left-0 w-full h-full -z-0 opacity-10 pointer-events-none">
+           <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-blue-100 rounded-full blur-[120px] -translate-x-1/2 -translate-y-1/2"></div>
+        </div>
+      </header>
 
-          <div className="prose prose-lg max-w-none prose-headings:font-bold prose-a:text-blue-600 hover:prose-a:underline mb-20">
-             {post ? (
-               typeof post.content === 'string' ? (
-                 <MDXRemote source={post.content} />
+      <div className="max-w-[1600px] mx-auto px-8 pb-32">
+        <div className="grid grid-cols-1 lg:grid-cols-10 gap-16">
+          
+          {/* Main Article Body (7 Parts) */}
+          <article className="lg:col-span-7">
+            {/* Featured Image */}
+            <div className="relative aspect-[16/9] rounded-[3rem] overflow-hidden shadow-[0_32px_64px_-16px_rgba(0,0,0,0.15)] group mb-20 transition-all duration-700 hover:shadow-blue-500/10">
+              <img 
+                src={displayPost.coverImage} 
+                alt={displayPost.title} 
+                className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" 
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+            </div>
+
+            <div className="flex items-center justify-between mb-12 p-8 bg-gray-50 rounded-[2.5rem] border border-gray-100">
+              <div className="flex items-center gap-5">
+                <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center font-black text-white text-xl shadow-lg">
+                  {displayPost.author.charAt(0)}
+                </div>
+                <div>
+                  <div className="font-black text-gray-900 text-lg">{displayPost.author}</div>
+                  <div className="text-xs text-gray-400 font-bold uppercase tracking-widest">Senior Content Editor</div>
+                </div>
+              </div>
+              <div className="hidden sm:flex gap-3">
+                <button className="w-12 h-12 rounded-2xl bg-white border border-gray-100 flex items-center justify-center text-gray-400 hover:text-blue-600 hover:border-blue-100 transition-all shadow-sm">
+                  <Share2 size={20} />
+                </button>
+                <button className="w-12 h-12 rounded-2xl bg-white border border-gray-100 flex items-center justify-center text-gray-400 hover:text-blue-600 hover:border-blue-100 transition-all shadow-sm">
+                  <Bookmark size={20} />
+                </button>
+              </div>
+            </div>
+
+            <div className="prose prose-xl max-w-none prose-headings:font-black prose-headings:tracking-tight prose-p:leading-relaxed prose-p:text-gray-600 prose-img:rounded-[2rem] prose-a:text-blue-600 prose-blockquote:border-l-4 prose-blockquote:border-blue-600 prose-blockquote:bg-blue-50/50 prose-blockquote:p-8 prose-blockquote:rounded-3xl prose-blockquote:not-italic prose-blockquote:font-medium">
+               {post ? (
+                 typeof post.content === 'string' ? (
+                   <MDXRemote source={post.content} />
+                 ) : (
+                   <MDXRemote {...post.content} />
+                 )
                ) : (
-                 <MDXRemote {...post.content} />
-               )
-             ) : (
-               <>
-                 <p className="text-xl leading-relaxed mb-6 font-medium text-gray-600">
-                   Trang trí phòng khách không chỉ là việc sắp xếp đồ đạc, mà là cách bạn thể hiện cá tính và tạo ra không gian thư giãn cho chính mình.
-                 </p>
-                 <p className="mb-6">
-                   Trong thế giới hiện đại đầy ồn ào, phong cách Minimalism (tối giản) nổi lên như một giải pháp tuyệt vời để tìm lại sự cân bằng. "Ít hơn là nhiều hơn" - đó là tôn chỉ của phong cách này.
-                 </p>
-                 <AdSlot slotId="in-article-ad" height={250} />
-                 <h2 className="text-2xl font-bold mt-10 mb-6">1. Chọn Gam Màu Trung Tính</h2>
-                 <p className="mb-6">
-                   Những gam màu như trắng, be, xám nhạt không bao giờ lỗi mốt. Chúng tạo cảm giác không gian rộng mở và sạch sẽ.
-                 </p>
-                 <h2 className="text-2xl font-bold mt-10 mb-6">2. Nội Thất Đa Năng</h2>
-                 <p className="mb-6">
-                   Hãy chọn những món đồ có thể phục vụ nhiều mục đích khác nhau để tiết kiệm diện tích tối đa.
-                 </p>
-               </>
-             )}
-          </div>
+                 <>
+                   <p className="text-2xl leading-relaxed mb-10 font-medium text-gray-900 italic">
+                     "Simplicity is the ultimate sophistication." This quote by Leonardo da Vinci perfectly encapsulates the essence of modern minimalist design.
+                   </p>
+                   <p>
+                     In an era dominated by constant noise and digital clutter, the spaces we inhabit have become more crucial than ever. Minimalism is not just an aesthetic choice; it's a philosophy of intentional living that prioritizes function, clarity, and peace.
+                   </p>
+                   <AdSlot slotId="in-article-ad" height={250} />
+                   <h2>The Foundation of Calm</h2>
+                   <p>
+                     When we strip away the unnecessary, we allow the essential to shine. In interior design, this translates to clean lines, a limited color palette, and a careful selection of materials that age gracefully.
+                   </p>
+                   <ul>
+                     <li><strong>Natural Light:</strong> The most important element of any minimalist space.</li>
+                     <li><strong>Negative Space:</strong> Learning to appreciate the "empty" areas as much as the furnished ones.</li>
+                     <li><strong>Quality over Quantity:</strong> Investing in pieces that serve multiple purposes and last a lifetime.</li>
+                   </ul>
+                   <blockquote>
+                     The secret of happiness, you see, is not found in seeking more, but in developing the capacity to enjoy less.
+                   </blockquote>
+                 </>
+               )}
+            </div>
 
-          <div className="mt-16 pt-8 border-t">
-             <h3 className="font-bold text-xl mb-8">Bạn có thể thích</h3>
-             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-               {/* Related Post Placeholders */}
-               <div className="bg-gray-50 p-6 rounded-2xl border border-transparent hover:border-blue-600 transition-colors">
-                 <h4 className="font-bold mb-2">5 Món ăn đường phố nên thử khi đến Đà Lạt</h4>
-                 <span className="text-xs text-blue-600 font-bold uppercase tracking-widest leading-none">Travel</span>
-               </div>
-               <div className="bg-gray-50 p-6 rounded-2xl border border-transparent hover:border-blue-600 transition-colors">
-                 <h4 className="font-bold mb-2">Xu hướng thời trang bền vững năm 2026</h4>
-                 <span className="text-xs text-blue-600 font-bold uppercase tracking-widest leading-none">Fashion</span>
-               </div>
-             </div>
-          </div>
-        </div>
+            {/* Tag Cloud */}
+            <div className="mt-20 pt-10 border-t flex flex-wrap gap-3">
+               {['Minimalism', 'Interior', 'Design', 'Architecture', 'Wellness'].map(tag => (
+                 <span key={tag} className="px-6 py-3 bg-gray-50 text-gray-500 rounded-2xl text-xs font-bold uppercase tracking-widest hover:bg-gray-100 cursor-pointer transition-all">
+                   #{tag}
+                 </span>
+               ))}
+            </div>
+          </article>
 
-        <div className="lg:col-span-4">
-          <Sidebar />
+          {/* Sidebar (3 Parts) */}
+          <aside className="lg:col-span-3 self-start">
+            <Sidebar />
+          </aside>
         </div>
       </div>
     </div>
