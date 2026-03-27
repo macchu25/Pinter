@@ -23,12 +23,12 @@ export default function RootLayout({
   return (
     <html lang="vi">
       <head>
-        <Script
+        {/* Google AdSense - Native script to avoid data-nscript attribute issues */}
+        <script
           async
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX"
           crossOrigin="anonymous"
-          strategy="afterInteractive"
-        />
+        ></script>
       </head>
       <body className={`${inter.className} bg-[#f8f8f6] text-[#1a1a1a] antialiased selection:bg-red-200 selection:text-red-900`}>
         <AuthProvider>
