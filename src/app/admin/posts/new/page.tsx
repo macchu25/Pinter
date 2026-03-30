@@ -19,6 +19,7 @@ export default function CreateNewPostPage() {
     excerpt: "",
     content: "",
     coverImage: "",
+    authorOverride: "", // Danh cho Magic Input
   });
 
   // UI State
@@ -61,6 +62,38 @@ export default function CreateNewPostPage() {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
+    
+    // MAGIC INPUT LOGIC for "excerpt" field
+    if (name === "excerpt" && (value.includes("@") || value.includes("#") || value.includes("img."))) {
+      const authorMatch = value.match(/@([^#\n]+)/);
+      const categoryMatch = value.match(/#([^@\s\n]+)/);
+      const imgMatch = value.match(/img\.([^\s\n]+)/);
+      
+      // Clean up title (remove the magic tags)
+      let detectedTitle = value
+        .replace(/@([^#\n]+)/, "")
+        .replace(/#([^@\s\n]+)/, "")
+        .replace(/img\.([^\s\n]+)/, "")
+        .trim();
+
+      setFormData((prev) => {
+        const updates: any = { ...prev, excerpt: value };
+        
+        if (authorMatch) updates.authorOverride = authorMatch[1].trim();
+        if (imgMatch) updates.coverImage = imgMatch[1].trim();
+        if (detectedTitle && detectedTitle.length > 3) updates.title = detectedTitle;
+        
+        if (categoryMatch) {
+          const catName = categoryMatch[1].trim().toLowerCase();
+          const targetCat = categories.find(c => c.name.toLowerCase() === catName || c.slug === catName);
+          if (targetCat) updates.category = targetCat._id;
+        }
+        
+        return updates;
+      });
+      return;
+    }
+
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
@@ -119,7 +152,7 @@ export default function CreateNewPostPage() {
         ...formData,
         excerpt: finalExcerpt,
         category: selectedCategory._id,
-        author: session.user?.name || "Admin",
+        author: formData.authorOverride || session.user?.name || "Admin",
       };
 
       console.log("Submitting post with token:", token.substring(0, 10) + "...");
