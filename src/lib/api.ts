@@ -90,16 +90,28 @@ export async function createCategory(categoryData: any, token: string) {
 }
 
 export async function uploadImage(file: File) {
-  const formData = new FormData();
-  formData.append('image', file);
+  const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || 'pinter-cloud'; // Thay bằng cloud_name của bạn
+  const uploadPreset = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || 'pinter_uploads';
 
-  const res = await fetch(`${API_URL.replace('/api', '')}/api/upload`, {
-    method: 'POST',
-    body: formData,
-  });
-  if (!res.ok) {
-    const error = await res.json();
-    throw new Error(error.error || 'Upload failed');
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('upload_preset', uploadPreset);
+
+  try {
+    const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
+      method: 'POST',
+      body: formData,
+    });
+
+    if (!res.ok) {
+      const error = await res.json();
+      throw new Error(error.message || 'Upload failed');
+    }
+
+    const data = await res.json();
+    return { imageUrl: data.secure_url };
+  } catch (error: any) {
+    console.error('Cloudinary Upload Error:', error);
+    throw new Error(error.message || 'Failed to connect to Cloudinary');
   }
-  return res.json();
 }
