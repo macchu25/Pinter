@@ -65,10 +65,11 @@ export default function CreateNewPostPage() {
     
     // MAGIC INPUT LOGIC for "excerpt" field
     if (name === "excerpt" && (value.includes("@") || value.includes("#") || value.includes("desc.") || value.includes("title."))) {
-      const authorMatch = value.match(/@([^#\n]+)/);
-      const categoryMatch = value.match(/#([^@\s\n]+)/);
-      const descMatch = value.match(/desc\.([^@#\n]+)/);
-      const titleMatch = value.match(/title\.([^@#\n]+)/);
+      // Dùng Regex thông minh: Lấy nội dung cho đến khi gặp từ khóa tiếp theo hoặc hết dòng
+      const authorMatch = value.match(/@([^#\n]+?)(?=\s#|\sdesc\.|\stitle\.|\n|$)/);
+      const categoryMatch = value.match(/#([^@\s\n]+?)(?=\s@|\sdesc\.|\stitle\.|\n|$)/);
+      const descMatch = value.match(/desc\.([^@#\n]+?)(?=\s@|\s#|\stitle\.|\n|$)/);
+      const titleMatch = value.match(/title\.([^@#\n]+?)(?=\s@|\s#|\sdesc\.|\n|$)/);
       
       setFormData((prev) => {
         const updates: any = { ...prev, excerpt: value };
@@ -81,14 +82,16 @@ export default function CreateNewPostPage() {
             updates.content = descVal;
           }
         }
+        
         if (titleMatch) {
           updates.title = titleMatch[1].trim();
-        } else {
-          // If title. is NOT found, use the old "remaining text" logic
+        } else if (!value.includes("title.")) {
+          // If title. is NOT present, extract title from the remainder
           let detectedTitle = value
-            .replace(/@([^#\n]+)/, "")
-            .replace(/#([^@\s\n]+)/, "")
-            .replace(/desc\.([^@#\n]+)/, "")
+            .replace(/@([^#\n]+?)(?=\s#|\sdesc\.|\stitle\.|\n|$)/, "")
+            .replace(/#([^@\s\n]+?)(?=\s@|\sdesc\.|\stitle\.|\n|$)/, "")
+            .replace(/desc\.([^@#\n]+?)(?=\s@|\s#|\stitle\.|\n|$)/, "")
+            .replace(/@|#|desc\.|title\./g, "")
             .trim();
           if (detectedTitle && detectedTitle.length > 3) updates.title = detectedTitle;
         }
