@@ -89,15 +89,31 @@ export async function createCategory(categoryData: any, token: string) {
   return res.json();
 }
 
+import imageCompression from 'browser-image-compression';
+
 export async function uploadImage(file: File) {
-  const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || 'pinter-cloud'; // Thay bằng cloud_name của bạn
+  const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || 'dbkj4q5ct';
   const uploadPreset = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || 'pinter_uploads';
 
-  const formData = new FormData();
-  formData.append('file', file);
-  formData.append('upload_preset', uploadPreset);
-
   try {
+    // Cấu hình nén ảnh: Chỉ nén khi ảnh quá lớn (ví dụ trên 2MB)
+    // Giữ lại chất lượng cao (90%) và đổi sang WebP
+    const options = {
+      maxSizeMB: 2,           // Nén xuống tối đa 2MB (vẫn cực kỳ sắc nét)
+      maxWidthOrHeight: 2500, // Giữ độ phân giải cao lên đến 2500px
+      useWebWorker: true,
+      initialQuality: 0.9,    // Chất lượng 90%
+      fileType: 'image/webp'  // Chuyển sang WebP để tối ưu dung lượng
+    };
+
+    console.log(`Original size: ${(file.size / 1024 / 1024).toFixed(2)} MB`);
+    const compressedFile = await imageCompression(file, options);
+    console.log(`Compressed size: ${(compressedFile.size / 1024 / 1024).toFixed(2)} MB`);
+
+    const formData = new FormData();
+    formData.append('file', compressedFile);
+    formData.append('upload_preset', uploadPreset);
+
     const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
       method: 'POST',
       body: formData,
@@ -111,7 +127,7 @@ export async function uploadImage(file: File) {
     const data = await res.json();
     return { imageUrl: data.secure_url };
   } catch (error: any) {
-    console.error('Cloudinary Upload Error:', error);
-    throw new Error(error.message || 'Failed to connect to Cloudinary');
+    console.error('Upload Error:', error);
+    throw new Error(error.message || 'Failed to optimize or upload image');
   }
 }
