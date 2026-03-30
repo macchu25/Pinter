@@ -55,15 +55,19 @@ const Sidebar = () => {
         <div className="mt-12">
           <h3 className="font-black text-xs uppercase tracking-[0.2em] text-gray-400 mb-8 border-b border-gray-100 pb-4">Most Read This Week</h3>
           <div className="space-y-8">
-            {[1, 2, 3].map((i) => (
-              <a key={i} href="#" className="flex gap-5 group">
+            {[
+              { id: '1507505548507-6cb0df2f3cae', title: "The Digital Nomads' Guide to Living in Đà Lạt" },
+              { id: '1495474472287-4d71bcdd2085', title: "10 Secret Coffee Spots in Sài Gòn" },
+              { id: '1494438639946-1ebd1d20bf85', title: "Why Modern Minimalism is Evolving" }
+            ].map((item, index) => (
+              <a key={index} href="#" className="flex gap-5 group">
                 <div className="relative w-20 h-20 bg-gray-100 shrink-0 rounded-2xl overflow-hidden shadow-sm group-hover:shadow-md transition-all">
                   <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors z-10"></div>
-                  <img src={`https://images.unsplash.com/photo-${1500000000000 + i}?auto=format&fit=crop&q=80&w=200`} alt="Article" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                  <img src={`https://images.unsplash.com/photo-${item.id}?auto=format&fit=crop&q=80&w=200`} alt="Article" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
                 </div>
                 <div className="flex flex-col justify-center">
                   <h4 className="font-bold text-sm group-hover:text-blue-600 transition-colors leading-[1.4] line-clamp-2 mb-1">
-                    {i === 1 ? "The Digital Nomads' Guide to Living in Đà Lạt" : i === 2 ? "10 Secret Coffee Spots in Sài Gòn" : "Why Modern Minimalism is Evolving"}
+                    {item.title}
                   </h4>
                   <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">March 24, 2026</span>
                 </div>
