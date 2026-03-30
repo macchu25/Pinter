@@ -64,23 +64,23 @@ export default function CreateNewPostPage() {
     const { name, value } = e.target;
     
     // MAGIC INPUT LOGIC for "excerpt" field
-    if (name === "excerpt" && (value.includes("@") || value.includes("#") || value.includes("img."))) {
+    if (name === "excerpt" && (value.includes("@") || value.includes("#") || value.includes("desc."))) {
       const authorMatch = value.match(/@([^#\n]+)/);
       const categoryMatch = value.match(/#([^@\s\n]+)/);
-      const imgMatch = value.match(/img\.([^\s\n]+)/);
+      const descMatch = value.match(/desc\.([^@#\n]+)/);
       
-      // Clean up title (remove the magic tags)
+      // Clean up title (remove the magic tags and the short description)
       let detectedTitle = value
         .replace(/@([^#\n]+)/, "")
         .replace(/#([^@\s\n]+)/, "")
-        .replace(/img\.([^\s\n]+)/, "")
+        .replace(/desc\.([^@#\n]+)/, "")
         .trim();
 
       setFormData((prev) => {
         const updates: any = { ...prev, excerpt: value };
         
         if (authorMatch) updates.authorOverride = authorMatch[1].trim();
-        if (imgMatch) updates.coverImage = imgMatch[1].trim();
+        if (descMatch) updates.excerpt = descMatch[1].trim(); // Extract the real excerpt from desc.
         if (detectedTitle && detectedTitle.length > 3) updates.title = detectedTitle;
         
         if (categoryMatch) {
