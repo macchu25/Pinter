@@ -80,7 +80,14 @@ export default function CreateNewPostPage() {
         const updates: any = { ...prev, excerpt: value };
         
         if (authorMatch) updates.authorOverride = authorMatch[1].trim();
-        if (descMatch) updates.excerpt = descMatch[1].trim(); // Extract the real excerpt from desc.
+        if (descMatch) {
+          const descVal = descMatch[1].trim();
+          updates.excerpt = descVal;
+          // Tự động điền vào Content nếu Content đang trống hoặc trùng với excerpt cũ
+          if (!prev.content || prev.content === prev.excerpt) {
+            updates.content = descVal;
+          }
+        }
         if (detectedTitle && detectedTitle.length > 3) updates.title = detectedTitle;
         
         if (categoryMatch) {
