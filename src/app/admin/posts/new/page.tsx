@@ -64,18 +64,12 @@ export default function CreateNewPostPage() {
     const { name, value } = e.target;
     
     // MAGIC INPUT LOGIC for "excerpt" field
-    if (name === "excerpt" && (value.includes("@") || value.includes("#") || value.includes("desc."))) {
+    if (name === "excerpt" && (value.includes("@") || value.includes("#") || value.includes("desc.") || value.includes("title."))) {
       const authorMatch = value.match(/@([^#\n]+)/);
       const categoryMatch = value.match(/#([^@\s\n]+)/);
       const descMatch = value.match(/desc\.([^@#\n]+)/);
+      const titleMatch = value.match(/title\.([^@#\n]+)/);
       
-      // Clean up title (remove the magic tags and the short description)
-      let detectedTitle = value
-        .replace(/@([^#\n]+)/, "")
-        .replace(/#([^@\s\n]+)/, "")
-        .replace(/desc\.([^@#\n]+)/, "")
-        .trim();
-
       setFormData((prev) => {
         const updates: any = { ...prev, excerpt: value };
         
@@ -83,12 +77,21 @@ export default function CreateNewPostPage() {
         if (descMatch) {
           const descVal = descMatch[1].trim();
           updates.excerpt = descVal;
-          // Tự động điền vào Content nếu Content đang trống hoặc trùng với excerpt cũ
           if (!prev.content || prev.content === prev.excerpt) {
             updates.content = descVal;
           }
         }
-        if (detectedTitle && detectedTitle.length > 3) updates.title = detectedTitle;
+        if (titleMatch) {
+          updates.title = titleMatch[1].trim();
+        } else {
+          // If title. is NOT found, use the old "remaining text" logic
+          let detectedTitle = value
+            .replace(/@([^#\n]+)/, "")
+            .replace(/#([^@\s\n]+)/, "")
+            .replace(/desc\.([^@#\n]+)/, "")
+            .trim();
+          if (detectedTitle && detectedTitle.length > 3) updates.title = detectedTitle;
+        }
         
         if (categoryMatch) {
           const catName = categoryMatch[1].trim().toLowerCase();
