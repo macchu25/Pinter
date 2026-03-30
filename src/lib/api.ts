@@ -96,19 +96,16 @@ export async function uploadImage(file: File) {
   const uploadPreset = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || 'pinter_uploads';
 
   try {
-    // Cấu hình nén ảnh: Chỉ nén khi ảnh quá lớn (ví dụ trên 2MB)
-    // Giữ lại chất lượng cao (90%) và đổi sang WebP
     const options = {
-      maxSizeMB: 2,           // Nén xuống tối đa 2MB (vẫn cực kỳ sắc nét)
-      maxWidthOrHeight: 2500, // Giữ độ phân giải cao lên đến 2500px
+      maxSizeMB: 5,           // Tăng lên 5MB cho thoải mái
+      maxWidthOrHeight: 2500,
       useWebWorker: true,
-      initialQuality: 0.9,    // Chất lượng 90%
-      fileType: 'image/webp'  // Chuyển sang WebP để tối ưu dung lượng
+      initialQuality: 0.8
     };
 
-    console.log(`Original size: ${(file.size / 1024 / 1024).toFixed(2)} MB`);
+    console.log(`Original size: ${(file.size / 1024 / 1024).toFixed(4)} MB`);
     const compressedFile = await imageCompression(file, options);
-    console.log(`Compressed size: ${(compressedFile.size / 1024 / 1024).toFixed(2)} MB`);
+    console.log(`Compressed size: ${(compressedFile.size / 1024 / 1024).toFixed(4)} MB`);
 
     const formData = new FormData();
     formData.append('file', compressedFile);
@@ -119,15 +116,16 @@ export async function uploadImage(file: File) {
       body: formData,
     });
 
+    const data = await res.json();
+    
     if (!res.ok) {
-      const error = await res.json();
-      throw new Error(error.message || 'Upload failed');
+      // Cloudinary trả về lỗi trong object error.message
+      throw new Error(data.error?.message || 'Upload failed');
     }
 
-    const data = await res.json();
     return { imageUrl: data.secure_url };
   } catch (error: any) {
-    console.error('Upload Error:', error);
+    console.error('Upload Error Details:', error);
     throw new Error(error.message || 'Failed to optimize or upload image');
   }
 }

@@ -5,6 +5,7 @@ import AdSlot from "@/components/ads/AdSlot";
 import { notFound } from "next/navigation";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import { Metadata } from 'next';
+import Image from "next/image";
 import { Calendar, Clock, Share2, Bookmark, MessageSquare } from 'lucide-react';
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
@@ -104,10 +105,12 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
           <article className="lg:col-span-7">
             {/* Featured Image */}
             <div className="relative aspect-[16/9] rounded-[3rem] overflow-hidden shadow-[0_32px_64px_-16px_rgba(0,0,0,0.15)] group mb-20 transition-all duration-700 hover:shadow-blue-500/10">
-              <img 
+              <Image 
                 src={displayPost.coverImage} 
                 alt={displayPost.title} 
                 className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" 
+                fill
+                priority
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
             </div>

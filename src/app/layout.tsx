@@ -26,7 +26,7 @@ export default function RootLayout({
         {/* Google AdSense - Native script to avoid data-nscript attribute issues */}
         <Script
           async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX"
+          src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID || 'ca-pub-9590480346137616'}`}
           crossOrigin="anonymous"
           strategy="afterInteractive"
         />

@@ -20,7 +20,7 @@ const AdSlot: React.FC<AdSlotProps> = ({
   format = 'auto', 
   height, 
   className = "",
-  isRealAd = false 
+  isRealAd = process.env.NODE_ENV === 'production' && !!process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID
 }) => {
   useEffect(() => {
     if (isRealAd) {
@@ -58,7 +58,7 @@ const AdSlot: React.FC<AdSlotProps> = ({
       */}
       <ins className="adsbygoogle"
            style={{ display: 'block', width: '100%' }}
-           data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" 
+           data-ad-client={process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID || 'ca-pub-XXXXXXXXXXXXXXXX'} 
            data-ad-slot={slotId}
            data-ad-format={format}
            data-full-width-responsive="true"></ins>

@@ -1,7 +1,5 @@
 import { MetadataRoute } from 'next';
 import { getAllPosts, getAllCategories } from '@/lib/api';
-import React from 'react';
-import AdSlot from '@/components/ads/AdSlot';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const posts = await getAllPosts();
